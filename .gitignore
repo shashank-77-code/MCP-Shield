@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.env
+.DS_Store
+
+# Supplied planning document - retained locally and not published by default.
+MCP Shield — End-to-End Engineering & UI_UX Blueprint.md.pdf
