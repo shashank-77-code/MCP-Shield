@@ -3,6 +3,8 @@ __pycache__/
 .pytest_cache/
 .venv/
 venv/
+*.stdout.log
+*.stderr.log
 .env
 .DS_Store
 

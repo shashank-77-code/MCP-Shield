@@ -1,0 +1,29 @@
+{
+  "policy_version": "A-1",
+  "allowed_roots": ["C:/work/repo"],
+  "allowed_repos": ["org/safe-repo"],
+  "approval": {
+    "timeout_s": 300,
+    "grant_ttl_s": 60
+  },
+  "initial_session_integrity": "TRUSTED",
+  "block_external_send_when_session_secret": false,
+  "destinations": {
+    "approved": [],
+    "restricted": []
+  },
+  "sensitivity_rules": [
+    {"glob": "C:/work/repo/secrets/**", "level": "SECRET"},
+    {"glob": "C:/work/repo/internal/**", "level": "CONFIDENTIAL"}
+  ],
+  "secret_detectors": [
+    {"name": "aws_key", "pattern": "AKIA[0-9A-Z]{16}"},
+    {"name": "private_key", "pattern": "-----BEGIN [A-Z ]*PRIVATE KEY-----"}
+  ],
+  "servers": {},
+  "authorization": [],
+  "allowed_origins": [],
+  "request_size_limit_bytes": 1048576,
+  "session_ttl_s": 28800,
+  "audit_limit": 1000
+}

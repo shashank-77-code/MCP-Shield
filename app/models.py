@@ -17,20 +17,25 @@ class Verdict(str, Enum):
 class ToolCall(BaseModel):
     tool: str = Field(min_length=1, max_length=120)
     arguments: dict[str, Any] = Field(default_factory=dict)
-    session_id: str = "demo-session"
+    session_id: str | None = None
+    run_id: str | None = None
     source: str = "mcp-client"
 
 
 class Event(BaseModel):
-    id: str = Field(default_factory=lambda: uuid4().hex[:10])
+    event_id: str = Field(default_factory=lambda: uuid4().hex)
+    event_type: str = "tool_call"
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    tool: str
+    tool_name: str
     source: str
-    verdict: Verdict
+    session_id: str
+    run_id: str | None = None
+    decision: Verdict
     message: str
     taints: list[str] = Field(default_factory=list)
     rule: str | None = None
     arguments: dict[str, Any] = Field(default_factory=dict)
+    latency_ms: float = 0
 
 
 class Decision(BaseModel):

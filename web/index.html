@@ -12,48 +12,53 @@
     <main>
       <nav class="topbar">
         <a class="brand" href="#top"><span class="brand-mark">◈</span><span>MCP <b>SHIELD</b></span></a>
-        <div class="nav-status"><span class="pulse"></span> GATE ACTIVE <span class="dot">•</span> LOCAL SESSION</div>
-        <button class="ghost" id="reset">Reset session</button>
+        <div class="nav-status"><span class="pulse" id="gateway-pulse"></span> <span id="gateway-status">CHECKING GATEWAY</span></div>
+        <button class="ghost" id="reset">Reset demo data</button>
       </nav>
 
       <section class="hero" id="top">
         <div class="hero-copy">
-          <p class="eyebrow">MCP security runtime <span>v0.1</span></p>
-          <h1>Let agents move fast.<br /><em>Not your secrets.</em></h1>
-          <p class="lede">An explainable inspection gate for tool calls, untrusted context, sensitive data, and outbound actions.</p>
-          <div class="actions"><button class="primary" id="run-demo"><span>▶</span> Run attack simulation</button><a href="#console" class="secondary">Inspect the gate <span>↓</span></a></div>
-          <div class="proof"><span><b>3</b> taint classes</span><span><b>100%</b> local demo</span><span><b>∞</b> audit clarity</span></div>
+          <p class="eyebrow">MCP security gateway <span>v0.1</span></p>
+          <h1>Every tool call.<br /><em>Accounted for.</em></h1>
+          <p class="lede">Live policy decisions, real downstream forwarding, and human approval for requests that need review.</p>
+          <div class="actions"><button class="primary" id="run-demo"><span>▶</span> Run DEMO DATA simulation</button><a href="#console" class="secondary">Inspect live gateway <span>↓</span></a></div>
+          <div class="proof"><span><b id="downstream-count">0</b> downstream servers</span><span><b id="approval-mode">locked</b> approval controls</span><span><b id="event-retention">1,000</b> retained audit events max</span></div>
         </div>
         <div class="radar-card">
-          <div class="radar-top"><span>LIVE TOPOLOGY</span><span class="tiny-live">● LIVE</span></div>
+          <div class="radar-top"><span>POLICY TRACE</span><span class="tiny-live">● LOCAL</span></div>
           <div class="radar"><i class="ring r1"></i><i class="ring r2"></i><i class="ring r3"></i><i class="sweep"></i><span class="radar-node n1">client</span><span class="radar-node n2">gate</span><span class="radar-node n3">slack</span><span class="signal"></span></div>
-          <div class="radar-foot"><span>Min-cut protected</span><strong>Shield Gate</strong></div>
+          <div class="radar-foot"><span>Current session</span><strong id="radar-status">CLEAR</strong></div>
         </div>
       </section>
 
       <section class="kpis" aria-label="Security metrics">
-        <article><span>SESSION RISK</span><strong id="risk">CLEAR</strong><small>Policy posture</small></article>
-        <article><span>EVENTS INSPECTED</span><strong id="event-count">00</strong><small>Live audit trail</small></article>
-        <article><span>ATTACK PATHS</span><strong>02</strong><small>Modeled routes</small></article>
-        <article><span>GATE LATENCY</span><strong>12<span>ms</span></strong><small>Local decision time</small></article>
+        <article><span>TOOL CALLS</span><strong id="tool-call-count">0</strong><small>Distinct requests in retained audit events</small></article>
+        <article><span>POLICY VERDICTS</span><strong class="verdicts"><span id="allow-call-count">0</span><span id="review-call-count">0</span><span id="blocked-call-count">0</span></strong><small>ALLOW / REVIEW / BLOCK</small></article>
+        <article><span>EXECUTED</span><strong id="executed-count">0</strong><small>Requests sent downstream</small></article>
+        <article><span>AUDIT EVENTS</span><strong id="event-count">0</strong><small>Retained gateway events</small></article>
       </section>
+      <section class="metric-strip" aria-label="Request outcomes"><span>REJECTED <b id="rejected-count">0</b></span><span>TIMED OUT <b id="timed-out-count">0</b></span><span>CANCELLED <b id="cancelled-count">0</b></span><span>DOWNSTREAM ERRORS <b id="downstream-error-count">0</b></span></section>
 
       <section class="console" id="console">
-        <div class="section-head"><div><p class="eyebrow">01 / request interceptor</p><h2>Security, <em>with receipts.</em></h2></div><p>Every decision is deterministic, inspectable, and attached to the call that caused it.</p></div>
+        <div class="section-head"><div><p class="eyebrow">01 / live gateway audit</p><h2>Security, <em>with receipts.</em></h2></div><p>Events, first policy decisions, forwarding status, and downstream results come from real MCP gateway activity.</p></div>
         <div class="console-grid">
-          <article class="panel event-panel"><div class="panel-head"><span>LIVE EVENT FEED</span><span class="connection"><i></i> CONNECTED</span></div><div id="event-feed" class="feed"><div class="empty"><span>◌</span>Waiting for a tool call</div></div></article>
-          <article class="panel approval-panel"><div class="panel-head"><span>HUMAN APPROVAL GATE</span><span id="approval-count">0 PENDING</span></div><div id="approval-feed" class="approval-feed"><div class="empty">No decision needs your attention.</div></div></article>
+          <div id="simulation-result" class="result-banner" role="status" aria-live="polite" hidden></div>
+          <article class="panel event-panel"><div class="panel-head"><span>GATEWAY EVENT FEED</span><span class="connection" id="connection-status"><i></i> CONNECTING</span></div><div id="event-feed" class="feed"><div class="empty"><span>◌</span>Waiting for a gateway request</div></div></article>
+          <article class="panel approval-panel"><div class="panel-head"><span>HUMAN APPROVAL GATE</span><span id="approval-count">LOCKED</span></div>
+            <div class="approval-auth"><label for="approver-token">Approver token</label><div class="approval-auth-row"><input id="approver-token" type="password" autocomplete="off" spellcheck="false" placeholder="Enter local operator token" /><button id="unlock-approvals" type="button">Unlock</button><button id="lock-approvals" type="button" disabled>Lock</button></div><p id="approval-auth-status" role="status" aria-live="polite">Enter an approver token to load pending requests. The token is kept in page memory only.</p></div>
+            <div id="approval-feed" class="approval-feed"><div class="empty">Approvals are locked.</div></div>
+          </article>
         </div>
       </section>
 
       <section class="graph-section">
-        <div class="section-head"><div><p class="eyebrow">02 / graph intelligence</p><h2>See the path.<br /><em>Sever the risk.</em></h2></div><p>Shield maps tool relationships before an attacker can turn context into egress.</p></div>
-        <article class="graph-panel"><div class="legend"><span><i class="l-client"></i>Client</span><span><i class="l-gate"></i>Gate</span><span><i class="l-tool"></i>Tool</span><span><i class="l-danger"></i>Egress</span></div><div class="attack-graph"><svg viewBox="0 0 900 360" preserveAspectRatio="none"><path d="M128 185 C230 185 260 185 354 185 M430 185 C500 115 525 90 615 90 M430 185 C500 250 525 275 615 275 M688 90 C755 125 770 155 815 185 M688 275 C755 240 770 215 815 185" /></svg><div class="node client" style="left:8%;top:44%">MCP<br />CLIENT</div><div class="node gate" style="left:39%;top:42%">SHIELD<br />GATE</div><div class="node tool" style="left:66%;top:17%">GITHUB</div><div class="node tool" style="left:66%;top:68%">FILESYSTEM</div><div class="node danger" style="left:87%;top:44%">SLACK<br />EGRESS</div></div><div class="graph-note"><span>MINIMUM CUT</span><b>Shield Gate</b><p>Two modeled egress paths are neutralized by one decision point.</p></div></article>
+        <div class="section-head"><div><p class="eyebrow">02 / latest gateway request</p><h2>Trace the call.<br /><em>See its actual path.</em></h2></div><p>This trace is assembled from the latest real request’s audit events, including whether Shield forwarded it and whether the downstream server responded.</p></div>
+        <article class="graph-panel"><div class="legend"><span><i class="l-client"></i>Request</span><span><i class="l-tool"></i>Forwarded</span><span><i class="l-review"></i>Review</span><span><i class="l-danger"></i>Blocked / error</span></div><div class="attack-graph"><svg id="session-edges" viewBox="0 0 900 360" preserveAspectRatio="none"></svg><div id="session-nodes"></div><div id="graph-empty" class="graph-empty">No real gateway requests yet. Connect an MCP client and call a Shield tool.</div></div><div class="graph-note"><span id="graph-scope">LATEST REQUEST</span><b id="graph-risk">No activity</b><p id="graph-detail">The trace will reflect actual gateway audit events.</p></div></article>
       </section>
 
       <section class="how"><p class="eyebrow">03 / the security sandwich</p><div class="how-grid"><article><span>01</span><h3>Observe</h3><p>Normalize every MCP call and inspect inputs for sensitive data or adversarial instructions.</p></article><article><span>02</span><h3>Reason</h3><p>Carry taint through the session, then evaluate clear, versioned policies.</p></article><article><span>03</span><h3>Intervene</h3><p>Allow safe work, pause uncertain impact, and block dangerous egress.</p></article></div></section>
       <footer><span>MCP SHIELD / LOCAL CONTROL ROOM</span><span>Built for deliberate agents.</span></footer>
     </main>
-    <script src="/assets/app.js"></script>
+    <script type="module" src="/assets/app.js"></script>
   </body>
 </html>
